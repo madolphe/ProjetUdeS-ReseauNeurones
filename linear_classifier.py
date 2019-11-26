@@ -18,6 +18,11 @@ class LinearClassifier(object):
         self.W = self.generate_init_weights(0.01)
 
     def generate_init_weights(self, init_scale):
+        """
+        Initialisation d'une matrice de poids du réseau
+        :param init_scale:
+        :return: np.array de taille (num_features x num_classes)
+        """
         return np.random.randn(self.num_features, self.num_classes) * init_scale
 
     def train(self, num_epochs=1, lr=1e-3, l2_reg=1e-4, lr_decay=1.0, init_scale=0.01):
@@ -65,7 +70,7 @@ class LinearClassifier(object):
             if sample_idx >= len(self.x_train):  # End of epoch
 
                 accu_train, loss_train = self.global_accuracy_and_cross_entropy_loss(self.x_train, self.y_train, l2_reg)
-                accu_val, loss_val, = self.global_accuracy_and_cross_entropy_loss(self.x_val, self.y_val, l2_reg)
+                accu_val, loss_val = self.global_accuracy_and_cross_entropy_loss(self.x_val, self.y_val, l2_reg)
 
                 loss_train_curve.append(loss_train)
                 loss_val_curve.append(loss_val)
@@ -87,11 +92,16 @@ class LinearClassifier(object):
 
          Returns a class label for each sample (a number between 0 and num_classes-1)
         """
-        class_label = np.zeros(X.shape[0])
+
         #############################################################################
         # TODO: Return the best class label.                                        #
         #############################################################################
-
+        X = augment(X)
+        logit = np.dot(self.W, X.T)
+        logit = np.exp(logit)
+        # logit est une matrice de taille (d,n) qu'on normalise colonne par colonne:
+        pred = logit / np.sum(logit, axis=0)
+        class_label = np.argmax(pred, axis=0)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -109,16 +119,30 @@ class LinearClassifier(object):
         - average accuracy as single float
         - average loss as single float
         """
-        accu = 0
-        loss = 0
         #############################################################################
         # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################
+        # y est il un one-hot-vector ?
+        y_encoded = y
+        if y.ndim == 1:
+            tmp = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+            y_encoded = np.array([tmp[y[i]] for i in range(len(y))])
+        X = augment(X)
+        logit = np.exp(np.dot(self.W, X.T))
 
+        # logit est une matrice de taille (d,n) qu'on normalise colonne par colonne:
+        pred = logit / np.sum(logit, axis=0)
+
+        # passage à l'encodage initial pour une prédiction sur des entiers (inutile en l'état):
+        pred_to_labels = [np.argmax(pred[:, i]) for i in range(len(pred.T))]
+        acc = np.mean(pred_to_labels == y)
+
+        # erreur moyenne :
+        loss = -np.sum(y_encoded*np.log(pred.T)) / len(pred.T)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
-        return accu, loss
+        return acc, loss
 
     def cross_entropy_loss(self, x, y, reg=0.0):
         """
@@ -147,7 +171,22 @@ class LinearClassifier(object):
         # 3- Dont forget the regularization!                                        #
         # 4- Compute gradient => eq.(4.104)                                         #
         #############################################################################
+        # 1:
+        tmp = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        y = np.array(tmp[y])
+        logit = np.exp(np.dot(self.W, x))
+        pred = logit / np.sum(logit, axis=0)
 
+        # 2:
+        # 3: @TODO: Ajouter le terme de regularisation !!!
+        loss = -np.sum(y*np.log(pred.T)) / len(pred.T)
+        # 4: dW est une matrice de taille 3x3 !!!
+        dW = np.dot(np.expand_dims((pred-y), axis=1), np.expand_dims(x, axis=0))
+        tmp = []
+        for j in range(len(pred)):
+            wj = list((pred[j] - y[j]) * x)
+            tmp.append(wj)
+        dW = np.array(tmp)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################

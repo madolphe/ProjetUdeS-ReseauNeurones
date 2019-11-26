@@ -122,7 +122,18 @@ class TwoLayerClassifier(object):
         #############################################################################
         # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################
-
+        # forward pass:
+        softmax_outputs = []
+        losses = []
+        for i in range(len(x)):
+            losses.append(self.net.forward_backward(x[i], y[i]))
+            logit = self.net.layer2.last_activ
+            logit = np.exp(logit)
+            softmax_outputs.append(logit / np.sum(logit, axis=0))
+        # Calcul de l'erreur et de la perte:
+        pred_to_labels = [np.argmax(softmax_outputs[i]) for i in range(len(softmax_outputs))]
+        acc = np.mean(pred_to_labels == y)
+        loss = np.mean(losses)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -148,6 +159,7 @@ class TwoLayerClassifier(object):
         #                          END OF YOUR CODE                                 #
         #############################################################################
         self.momentum_cache_v_prev[id(w)] = v
+
 
 class TwoLayerNet(object):
     """
@@ -216,11 +228,21 @@ class TwoLayerNet(object):
         # 3- Dont forget the regularization!                                        #
         # 4- Compute gradient with respect to the score => eq.(4.104) with phi_n=1  #
         #############################################################################
+        # On transforme notre label en one-hot-vector:
+        if y.ndim == 1:
+            tmp = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+            y = np.array([tmp[y[i]] for i in range(len(y))])
+        # 1-
+        logit = np.exp(scores)
+        output_softmax = logit / np.sum(logit, axis=0)
+        # 2-
+        loss = -np.sum(y*np.log(output_softmax.T)) / len(output_softmax.T)
+        # 3- @TODO ajouter la regularisation !!!
+        # 4- Gradient:
 
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
-
         return loss, dloss_dscores
 
 
@@ -259,19 +281,21 @@ class DenseLayer(object):
         Returns a tuple of:
         - f: a floating point value
         """
-        x = augment(x)
         #############################################################################
         # TODO: Compute forward pass.  Do not forget to add 1 to x in case of bias  #
         # C.f. function augment(x)                                                  #
         #############################################################################
-        f = self.W[1] ## REMOVE THIS LINE
-
+        x = augment(x)
+        f = np.dot(self.W.T, x)
+        if self.activation == 'relu':
+            f = np.array([f[i] if f[i] > 0 else 0 for i in range(len(f))])
+        elif self.activation == 'sigmoid':
+            f = sigmoid(f)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
         self.last_x = x
         self.last_activ = f
-
         return f
 
     def backward(self, dnext_dout, l2_reg):
