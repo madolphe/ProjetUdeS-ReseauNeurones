@@ -127,8 +127,7 @@ class TwoLayerClassifier(object):
         losses = []
         for i in range(len(x)):
             losses.append(self.net.forward_backward(x[i], y[i]))
-            logit = self.net.layer2.last_activ
-            logit = np.exp(logit)
+            logit = np.exp(self.net.layer2.last_activ)
             softmax_outputs.append(logit / np.sum(logit, axis=0))
         # Calcul de l'erreur et de la perte:
         pred_to_labels = [np.argmax(softmax_outputs[i]) for i in range(len(softmax_outputs))]
@@ -137,7 +136,7 @@ class TwoLayerClassifier(object):
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
-        return accu, loss
+        return acc, loss
 
     def momentum_update(self, w, dw, lr, mu):
         """
@@ -229,14 +228,13 @@ class TwoLayerNet(object):
         # 4- Compute gradient with respect to the score => eq.(4.104) with phi_n=1  #
         #############################################################################
         # On transforme notre label en one-hot-vector:
-        if y.ndim == 1:
-            tmp = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-            y = np.array([tmp[y[i]] for i in range(len(y))])
+        tmp = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+        y = tmp[y]
         # 1-
         logit = np.exp(scores)
         output_softmax = logit / np.sum(logit, axis=0)
         # 2-
-        loss = -np.sum(y*np.log(output_softmax.T)) / len(output_softmax.T)
+        loss = -np.sum(y*np.log(output_softmax.T))
         # 3- @TODO ajouter la regularisation !!!
         # 4- Gradient:
 
