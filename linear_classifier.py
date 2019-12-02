@@ -138,7 +138,7 @@ class LinearClassifier(object):
         acc = np.mean(pred_to_labels == y)
 
         # erreur moyenne :
-        loss = -np.sum(y_encoded*np.log(pred.T)) / len(pred.T)
+        loss = -np.sum(y_encoded*np.log(pred.T)) / len(pred.T) + reg*np.sum(self.W**2)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -179,14 +179,14 @@ class LinearClassifier(object):
 
         # 2:
         # 3: @TODO: Ajouter le terme de regularisation !!!
-        loss = -np.sum(y*np.log(pred.T)) / len(pred.T)
+        loss = (-np.sum(y*np.log(pred.T)) / len(pred.T)) + reg*np.sum(self.W**2)
+
         # 4: dW est une matrice de taille 3x3 !!!
-        dW = np.dot(np.expand_dims((pred-y), axis=1), np.expand_dims(x, axis=0))
         tmp = []
         for j in range(len(pred)):
             wj = list((pred[j] - y[j]) * x)
             tmp.append(wj)
-        dW = np.array(tmp)
+        dW = np.array(tmp) + 2*reg*self.W
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
