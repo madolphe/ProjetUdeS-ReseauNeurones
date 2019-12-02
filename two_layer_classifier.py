@@ -126,7 +126,11 @@ class TwoLayerClassifier(object):
         softmax_outputs = []
         losses = []
         for i in range(len(x)):
+            # On récupère la perte pour notre donnée x courrante:
             losses.append(self.net.forward_backward(x[i], y[i]))
+            # On récupère la sortie afin de calculer par la suite la précision du modèle
+            # Note: on aurait pu modifier la signature de net.forward_backward afin de
+            # récupérer aussi la sortie du réseau
             logit = np.exp(self.net.layer2.last_activ)
             softmax_outputs.append(logit / np.sum(logit, axis=0))
         # Calcul de l'erreur et de la perte:
@@ -233,11 +237,16 @@ class TwoLayerNet(object):
         # 1-
         logit = np.exp(scores)
         output_softmax = logit / np.sum(logit, axis=0)
-        # 2-
-        loss = -np.sum(y*np.log(output_softmax.T))
-        # 3- @TODO ajouter la regularisation !!!
+        # 2,3-:
+        loss = -np.sum(y*np.log(output_softmax)) \
+               + self.l2_reg*(np.sum(self.layer1.W**2) + np.sum(self.layer2.W**2))
         # 4- Gradient:
-
+        # 4: dW est une matrice de taille 3x3 !!!
+        tmp = []
+        for j in range(len(output_softmax)):
+            wj = list((output_softmax[j] - y[j]) * self.layer1.last_x)
+            tmp.append(wj)
+        # dloss_dscores = np.array(tmp) + 2*self.l2_reg*(np.sum(self.layer1.W**2) + np.sum(self.layer2.W**2))
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
