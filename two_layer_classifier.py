@@ -120,7 +120,7 @@ class TwoLayerClassifier(object):
         loss = 0
         accu = 0
         #############################################################################
-        # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
+        #       Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################
         # forward pass:
         softmax_outputs = []
@@ -155,9 +155,11 @@ class TwoLayerClassifier(object):
 
         v_prev = self.momentum_cache_v_prev[id(w)]
         #############################################################################
-        # TODO: update w with momentum                                              #
+        # Update w with momentum                                                    #
         #############################################################################
-        v=0 # remove this line
+        v = mu*v_prev + dw
+        w -= lr*v
+        self.net.parameters[self.net.parameters.index(w)] = w
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -224,7 +226,7 @@ class TwoLayerNet(object):
         dloss_dscores = np.zeros(np.size(scores))
 
         #############################################################################
-        # TODO: Compute the softmax loss and its gradient.                          #
+        #       Compute the softmax loss and its gradient.                          #
         # Store the loss in loss and the gradient in dW.                            #
         # 1- Compute softmax => eq.(4.104) or eq.(5.25) Bishop                      #
         # 2- Compute cross-entropy loss => eq.(4.108)                               #
@@ -289,7 +291,7 @@ class DenseLayer(object):
         - f: a floating point value
         """
         #############################################################################
-        # TODO: Compute forward pass.  Do not forget to add 1 to x in case of bias  #
+        #       Compute forward pass.  Do not forget to add 1 to x in case of bias  #
         # C.f. function augment(x)                                                  #
         #############################################################################
         x = augment(x)

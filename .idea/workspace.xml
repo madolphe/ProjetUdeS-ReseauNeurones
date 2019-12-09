@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="da2f4840-e706-4c35-9754-19e3ada4e68f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Devoir4-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Devoir4-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Devoir4.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir4.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/two_layer_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/two_layer_classifier.py" afterDir="false" />
     </list>
@@ -22,7 +23,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/linear_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
+            <state relative-caret-position="2715">
               <caret line="181" selection-start-line="181" selection-end-line="181" />
             </state>
           </provider>
@@ -49,8 +50,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/two_layer_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-467">
-              <caret line="137" column="42" lean-forward="true" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
+            <state relative-caret-position="1128">
+              <caret line="99" column="12" selection-start-line="99" selection-start-column="12" selection-end-line="99" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -126,18 +127,19 @@
       <updated>1574523424454</updated>
       <workItem from="1574523427811" duration="22351000" />
       <workItem from="1574797131775" duration="1889000" />
-      <workItem from="1575301099546" duration="2663000" />
+      <workItem from="1575301099546" duration="2668000" />
+      <workItem from="1575858580614" duration="2197000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26903000" />
+    <option name="totallyTimeSpent" value="29105000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2014652" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2039072" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -153,7 +155,7 @@
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.2867347" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.030612245" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="13" visible="true" weight="0.23163265" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="13" visible="true" weight="0.23163265" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -175,6 +177,13 @@
     <entry file="file://$PROJECT_DIR$/Pipfile">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/linear_classifier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2715">
+          <caret line="181" selection-start-line="181" selection-end-line="181" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Devoir4.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
@@ -189,17 +198,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/linear_classifier.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="181" selection-start-line="181" selection-end-line="181" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/two_layer_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-467">
-          <caret line="137" column="42" lean-forward="true" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
+        <state relative-caret-position="1128">
+          <caret line="99" column="12" selection-start-line="99" selection-start-column="12" selection-end-line="99" selection-end-column="12" />
         </state>
       </provider>
     </entry>
