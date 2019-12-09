@@ -86,18 +86,21 @@ class TwoLayerClassifier(object):
         """
         if len(x.shape) == 1:  # Predict on one sample
             #############################################################################
-            # TODO: return the most probable class label for one sample.                #
+            # return the most probable class label for one sample.                      #
             #############################################################################
-            return 0
+            print(np.exp(self.net.forward(x))/np.sum(np.exp(self.net.forward(x))))
+            return np.argmax(np.exp(self.net.forward(x))/np.sum(np.exp(self.net.forward(x))))
             #############################################################################
             #                          END OF YOUR CODE                                 #
             #############################################################################
 
         elif len(x.shape) == 2:  # Predict on multiple samples
             #############################################################################
-            # TODO: return the most probable class label for many samples               #
+            # return the most probable class label for many samples                     #
             #############################################################################
-            return np.zeros(x.shape[0])
+            pred = np.array([np.exp(self.net.forward(elt)) / np.sum(np.exp(self.net.forward(elt))) for elt in x])
+            pred_to_label = np.argmax(pred, axis=1)
+            return pred_to_label
             #############################################################################
             #                          END OF YOUR CODE                                 #
             #############################################################################
@@ -116,9 +119,6 @@ class TwoLayerClassifier(object):
         """
         if l2_r > 0:
             self.net.l2_reg = l2_r
-
-        loss = 0
-        accu = 0
         #############################################################################
         #       Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################
@@ -126,7 +126,7 @@ class TwoLayerClassifier(object):
         softmax_outputs = []
         losses = []
         for i in range(len(x)):
-            # On récupère la perte pour notre donnée x courrante:
+            # On récupère la perte pour notre donnée i courrante:
             losses.append(self.net.forward_backward(x[i], y[i]))
             # On récupère la sortie afin de calculer par la suite la précision du modèle
             # Note: on aurait pu modifier la signature de net.forward_backward afin de
@@ -152,18 +152,27 @@ class TwoLayerClassifier(object):
 
         Returns nothing
         """
-
+        # self.net.parameters possède 2 numpy
+        # donc self.net.parameters[layer] est un type valeur !
         v_prev = self.momentum_cache_v_prev[id(w)]
+        layer = self.net.parameters.index(w)
         #############################################################################
-        # Update w with momentum                                                    #
+        # Update v and w                                                            #
         #############################################################################
         v = mu*v_prev + dw
-        w -= lr*v
-        self.net.parameters[self.net.parameters.index(w)] = w
+        w = w - lr*v
+        #############################################################################
+        # Update w new value                                                        #
+        #############################################################################
+        # self.net.parameters[layer] = w
+        if layer == 0:
+            self.net.layer1.W = w
+        else:
+            self.net.layer2.W = w
+        self.momentum_cache_v_prev[id(w)] = v
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
-        self.momentum_cache_v_prev[id(w)] = v
 
 
 class TwoLayerNet(object):
@@ -221,10 +230,6 @@ class TwoLayerNet(object):
         - loss as single float
         - gradient with respect to weights; an array of same shape as W1 and W2
         """
-
-        loss = 999.9
-        dloss_dscores = np.zeros(np.size(scores))
-
         #############################################################################
         #       Compute the softmax loss and its gradient.                          #
         # Store the loss in loss and the gradient in dW.                            #
@@ -240,19 +245,15 @@ class TwoLayerNet(object):
         logit = np.exp(scores)
         output_softmax = logit / np.sum(logit, axis=0)
         # 2,3-:
-        loss = -np.sum(y*np.log(output_softmax)) \
-               + self.l2_reg*(np.sum(self.layer1.W**2) + np.sum(self.layer2.W**2))
+        loss = -np.sum(y*np.log(output_softmax)) + self.l2_reg*(np.sum(self.layer1.W**2) + np.sum(self.layer2.W**2))
         # 4- Gradient:
-        # 4: dW est une matrice de taille 3x3 !!!
-        tmp = []
-        for j in range(len(output_softmax)):
-            wj = list((output_softmax[j] - y[j]) * self.layer1.last_x)
-            tmp.append(wj)
-        # dloss_dscores = np.array(tmp) + 2*self.l2_reg*(np.sum(self.layer1.W**2) + np.sum(self.layer2.W**2))
+        # 4:
+        # Derivée de l'activation:
+        dloss = np.array(output_softmax-np.array(y))
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
-        return loss, dloss_dscores
+        return loss, dloss
 
 
 class DenseLayer(object):
@@ -322,7 +323,6 @@ class DenseLayer(object):
             dnext_dW = self.last_x[:, np.newaxis].dot(dnext_dout[np.newaxis, :])
             dnext_dX = dnext_dout.dot(self.W.T)
         dnext_dX = dnext_dX[:-1]  # discard the gradient wrt the 1.0 of homogeneous coord
-
         self.dW += dnext_dW
         self.dW += l2_reg * self.W  # add regul. gradient
         return dnext_dX
