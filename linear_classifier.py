@@ -94,7 +94,7 @@ class LinearClassifier(object):
         """
 
         #############################################################################
-        # TODO: Return the best class label.                                        #
+        # Return the best class label.                                              #
         #############################################################################
         X = augment(X)
         logit = np.dot(self.W, X.T)
@@ -120,9 +120,8 @@ class LinearClassifier(object):
         - average loss as single float
         """
         #############################################################################
-        # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
+        #       Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################
-        # y est il un one-hot-vector ?
         y_encoded = y
         if y.ndim == 1:
             tmp = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -164,7 +163,7 @@ class LinearClassifier(object):
         dW = np.zeros_like(self.W)
 
         #############################################################################
-        # TODO: Compute the softmax loss and its gradient.                          #
+        #       Compute the softmax loss and its gradient.                          #
         # Store the loss in loss and the gradient in dW.                            #
         # 1- Compute softmax => eq.(4.104) or eq.(5.25) Bishop                      #
         # 2- Compute cross-entropy loss => eq.(4.108)                               #
@@ -178,7 +177,6 @@ class LinearClassifier(object):
         pred = logit / np.sum(logit, axis=0)
 
         # 2:
-        # 3: @TODO: Ajouter le terme de regularisation !!!
         loss = (-np.sum(y*np.log(pred.T)) / len(pred.T)) + reg*np.sum(self.W**2)
 
         # 4: dW est une matrice de taille 3x3 !!!

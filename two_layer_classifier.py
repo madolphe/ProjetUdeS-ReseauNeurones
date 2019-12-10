@@ -88,7 +88,6 @@ class TwoLayerClassifier(object):
             #############################################################################
             # return the most probable class label for one sample.                      #
             #############################################################################
-            print(np.exp(self.net.forward(x))/np.sum(np.exp(self.net.forward(x))))
             return np.argmax(np.exp(self.net.forward(x))/np.sum(np.exp(self.net.forward(x))))
             #############################################################################
             #                          END OF YOUR CODE                                 #
